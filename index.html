@@ -1061,6 +1061,175 @@ footer {
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .cart-checkout-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--blue-glow); }
+.cart-checkout-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+
+/* ============================================================
+   CHECKOUT MODAL
+   ============================================================ */
+#checkout-overlay {
+  position:fixed; inset:0; background:rgba(4,8,15,0.88);
+  z-index:2500; display:none; align-items:center; justify-content:center;
+  padding:20px; backdrop-filter:blur(12px);
+}
+#checkout-overlay.show { display:flex; }
+.checkout-card {
+  background:var(--bg-1); border:1px solid var(--glass-border);
+  border-radius:var(--r-xl); width:100%; max-width:580px;
+  max-height:92vh; overflow-y:auto; animation:fadeUp 0.3s var(--ease);
+}
+.checkout-header {
+  padding:28px 32px 20px; border-bottom:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.checkout-header h3 {
+  font-family:var(--font-display); font-size:22px; font-weight:800; margin:0;
+}
+.checkout-close {
+  width:36px; height:36px; background:var(--glass);
+  border:1px solid var(--glass-border); border-radius:50%;
+  color:var(--text-2); display:flex; align-items:center; justify-content:center;
+  font-size:14px; cursor:pointer; transition:all 0.2s;
+}
+.checkout-close:hover { border-color:var(--blue); color:var(--blue); }
+.checkout-body { padding:28px 32px; }
+
+/* Order summary */
+.co-summary {
+  background:var(--glass); border:1px solid var(--glass-border);
+  border-radius:var(--r-md); padding:16px 20px; margin-bottom:24px;
+}
+.co-summary-title {
+  font-family:var(--font-display); font-size:12px; font-weight:700;
+  letter-spacing:1px; color:var(--text-3); text-transform:uppercase;
+  margin-bottom:12px;
+}
+.co-summary-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:6px 0; font-size:14px; color:var(--text-2);
+}
+.co-summary-item .co-qty { color:var(--text-3); font-size:12px; }
+.co-summary-total {
+  display:flex; justify-content:space-between; align-items:center;
+  padding-top:12px; margin-top:12px; border-top:1px solid var(--line);
+  font-family:var(--font-display); font-weight:700;
+}
+.co-summary-total .co-total-num {
+  font-size:22px; font-weight:800;
+  background:var(--grad); -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent; background-clip:text;
+}
+
+/* Payment method tabs */
+.co-tabs {
+  display:flex; gap:6px; margin-bottom:20px;
+  background:var(--glass); border-radius:var(--r-md); padding:4px;
+}
+.co-tab {
+  flex:1; padding:10px 6px; border:none; background:transparent;
+  border-radius:var(--r-sm); color:var(--text-3);
+  font-family:var(--font-display); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all 0.3s var(--ease); text-align:center;
+  letter-spacing:0.5px;
+}
+.co-tab.active {
+  background:var(--grad); color:#fff;
+  box-shadow:0 4px 16px var(--blue-glow);
+}
+.co-tab:not(.active):hover { color:var(--text); background:var(--glass-hover); }
+.co-tab-panel { display:none; }
+.co-tab-panel.active { display:block; }
+
+/* Form fields */
+.co-field {
+  margin-bottom:16px;
+}
+.co-label {
+  display:block; font-size:12px; font-weight:600; color:var(--text-3);
+  font-family:var(--font-display); letter-spacing:0.5px;
+  text-transform:uppercase; margin-bottom:6px;
+}
+.co-input, .co-select {
+  width:100%; padding:12px 16px; background:var(--glass);
+  border:1px solid var(--glass-border); border-radius:var(--r-sm);
+  color:var(--text); font-family:var(--font-body); font-size:14px;
+  outline:none; transition:border 0.3s;
+}
+.co-input:focus, .co-select:focus { border-color:var(--blue); }
+.co-select {
+  appearance:none; cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 16px center;
+}
+.co-select option { background:var(--bg-1); color:var(--text); }
+.co-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+/* Network selector cards */
+.co-networks {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px;
+}
+.co-network {
+  padding:14px 8px; background:var(--glass);
+  border:2px solid var(--glass-border); border-radius:var(--r-md);
+  text-align:center; cursor:pointer; transition:all 0.3s var(--ease);
+}
+.co-network:hover { border-color:var(--blue); }
+.co-network.selected { border-color:var(--blue); background:var(--blue-dim); }
+.co-network-icon { font-size:28px; margin-bottom:6px; }
+.co-network-name { font-size:11px; font-weight:700; color:var(--text-2); font-family:var(--font-display); }
+.co-network-prefix { font-size:10px; color:var(--text-3); font-family:var(--font-mono); margin-top:2px; }
+
+/* Bank list */
+.co-banks { max-height:180px; overflow-y:auto; margin-bottom:16px; }
+
+/* Pay button */
+.co-pay-btn {
+  width:100%; padding:16px; background:var(--grad);
+  border:none; border-radius:var(--r-xl); color:#fff;
+  font-family:var(--font-display); font-size:16px; font-weight:700;
+  cursor:pointer; transition:all 0.3s var(--ease);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:24px;
+}
+.co-pay-btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px var(--blue-glow); }
+.co-pay-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+.co-pay-btn .spinner {
+  width:18px; height:18px; border:2px solid rgba(255,255,255,0.3);
+  border-top-color:#fff; border-radius:50%;
+  animation:spin 0.6s linear infinite; display:none;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Security note */
+.co-secure {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  margin-top:16px; font-size:11px; color:var(--text-3);
+  font-family:var(--font-mono);
+}
+
+/* Payment success */
+.co-success {
+  text-align:center; padding:40px 20px;
+}
+.co-success-icon { font-size:72px; margin-bottom:20px; }
+.co-success h4 {
+  font-family:var(--font-display); font-size:22px; font-weight:800; margin-bottom:10px;
+}
+.co-success p { color:var(--text-2); font-size:14px; line-height:1.6; }
+.co-success .co-ref {
+  font-family:var(--font-mono); font-size:12px; color:var(--cyan);
+  background:var(--glass); padding:8px 16px; border-radius:var(--r-sm);
+  display:inline-block; margin-top:12px;
+}
+
+/* Responsive */
+@media(max-width:500px) {
+  .checkout-card { border-radius:var(--r-lg); }
+  .checkout-header, .checkout-body { padding-left:20px; padding-right:20px; }
+  .co-row { grid-template-columns:1fr; }
+  .co-networks { grid-template-columns:1fr 1fr 1fr; gap:6px; }
+  .co-tab { font-size:10px; padding:8px 4px; }
+}
+
 .cart-empty {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; height: 100%; color: var(--text-3); gap: 12px;
@@ -1782,7 +1951,112 @@ footer {
       <span class="cart-total-label">Total</span>
       <span class="cart-total-num" id="cart-total">K0.00</span>
     </div>
-    <button class="cart-checkout-btn" onclick="showToast('Checkout coming soon!','info')">Proceed to Checkout &rarr;</button>
+    <button class="cart-checkout-btn" id="cart-checkout-btn" onclick="openCheckout()">Proceed to Checkout &rarr;</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     CHECKOUT MODAL
+     ============================================================ -->
+<div id="checkout-overlay" onclick="closeCheckout()">
+  <div class="checkout-card" onclick="event.stopPropagation()">
+    <div class="checkout-header">
+      <h3>&#128179; Checkout</h3>
+      <button class="checkout-close" onclick="closeCheckout()">&#10005;</button>
+    </div>
+    <div class="checkout-body" id="checkout-body">
+      <!-- Order summary -->
+      <div class="co-summary">
+        <div class="co-summary-title">Order Summary</div>
+        <div id="co-items"></div>
+        <div class="co-summary-total">
+          <span>Total</span>
+          <span class="co-total-num" id="co-total">K0.00</span>
+        </div>
+      </div>
+
+      <!-- Customer details -->
+      <div class="co-row">
+        <div class="co-field">
+          <label class="co-label">Full Name</label>
+          <input type="text" class="co-input" id="co-name" placeholder="Kahyata Muzaza" required>
+        </div>
+        <div class="co-field">
+          <label class="co-label">Email</label>
+          <input type="email" class="co-input" id="co-email" placeholder="you@email.com" required>
+        </div>
+      </div>
+
+      <!-- Payment method tabs -->
+      <div class="co-tabs">
+        <button class="co-tab active" onclick="switchPayTab('momo',this)">&#128241; Mobile Money</button>
+        <button class="co-tab" onclick="switchPayTab('bank',this)">&#127974; Bank Transfer</button>
+        <button class="co-tab" onclick="switchPayTab('card',this)">&#128179; Card</button>
+      </div>
+
+      <!-- MOBILE MONEY TAB -->
+      <div class="co-tab-panel active" id="co-panel-momo">
+        <div class="co-networks" id="co-networks">
+          <div class="co-network selected" onclick="selectNetwork(this,'MTN')">
+            <div class="co-network-icon">&#128312;</div>
+            <div class="co-network-name">MTN MoMo</div>
+            <div class="co-network-prefix">096, 076</div>
+          </div>
+          <div class="co-network" onclick="selectNetwork(this,'AIRTEL')">
+            <div class="co-network-icon">&#128308;</div>
+            <div class="co-network-name">Airtel Money</div>
+            <div class="co-network-prefix">097, 077</div>
+          </div>
+          <div class="co-network" onclick="selectNetwork(this,'ZAMTEL')">
+            <div class="co-network-icon">&#128994;</div>
+            <div class="co-network-name">Zamtel Kwacha</div>
+            <div class="co-network-prefix">095, 075</div>
+          </div>
+        </div>
+        <div class="co-field">
+          <label class="co-label">Phone Number</label>
+          <input type="tel" class="co-input" id="co-phone" placeholder="096XXXXXXX" maxlength="10">
+        </div>
+      </div>
+
+      <!-- BANK TRANSFER TAB -->
+      <div class="co-tab-panel" id="co-panel-bank">
+        <div class="co-field">
+          <label class="co-label">Select Your Bank</label>
+          <select class="co-select" id="co-bank">
+            <option value="">-- Choose a bank --</option>
+            <option value="ZM210000">Zanaco</option>
+            <option value="ZM100000">FNB Zambia</option>
+            <option value="ZM040000">Stanbic Bank Zambia</option>
+            <option value="ZM020000">ABSA Bank Zambia</option>
+            <option value="ZM060000">Atlas Mara Bank</option>
+            <option value="ZM080000">Indo Zambia Bank</option>
+            <option value="ZM090000">Investrust Bank</option>
+            <option value="ZM050000">First Alliance Bank</option>
+            <option value="ZM070000">Access Bank Zambia</option>
+            <option value="ZM030000">Citibank Zambia</option>
+            <option value="ZM110000">United Bank for Africa</option>
+            <option value="ZM120000">Bank of China Zambia</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- CARD PAYMENT TAB -->
+      <div class="co-tab-panel" id="co-panel-card">
+        <div style="text-align:center;padding:20px 0;color:var(--text-2);font-size:14px;line-height:1.7">
+          <div style="font-size:40px;margin-bottom:12px">&#128179;</div>
+          You will be redirected to Flutterwave's secure payment page to complete your card payment (Visa / Mastercard).
+        </div>
+      </div>
+
+      <!-- Pay button -->
+      <button class="co-pay-btn" id="co-pay-btn" onclick="processPayment()">
+        <span id="co-pay-text">Pay Now</span>
+        <div class="spinner" id="co-spinner"></div>
+      </button>
+
+      <div class="co-secure">&#128274; Secured by Flutterwave &amp; MoneyUnify</div>
+    </div>
   </div>
 </div>
 
@@ -2493,6 +2767,184 @@ function showToast(msg, type) {
   wrap.appendChild(t);
   setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 300); }, 3000);
 }
+
+/* ============================================================
+   CHECKOUT
+   ============================================================ */
+const API_BASE = window.KC_API_BASE || '';
+let selectedNetwork = 'MTN';
+let selectedPayMethod = 'momo';
+
+function openCheckout() {
+  if(cart.length === 0) { showToast('Your cart is empty!','err'); return; }
+  closeCart();
+  renderCheckoutSummary();
+  document.getElementById('checkout-overlay').classList.add('show');
+}
+
+function closeCheckout() {
+  document.getElementById('checkout-overlay').classList.remove('show');
+  resetCheckoutForm();
+}
+
+function renderCheckoutSummary() {
+  const itemsEl = document.getElementById('co-items');
+  itemsEl.innerHTML = cart.map(c => {
+    const p = products.find(x => x.id === c.id);
+    if(!p) return '';
+    return `<div class="co-summary-item">
+      <span>${p.emoji} ${p.name} <span class="co-qty">&times;${c.qty}</span></span>
+      <span>K${(p.price * c.qty).toFixed(2)}</span>
+    </div>`;
+  }).join('');
+  const total = cart.reduce((s,c) => {
+    const p = products.find(x => x.id === c.id);
+    return s + (p ? p.price * c.qty : 0);
+  }, 0);
+  document.getElementById('co-total').textContent = 'K' + total.toFixed(2);
+  document.getElementById('co-pay-text').textContent = 'Pay K' + total.toFixed(2);
+}
+
+function switchPayTab(tab, btn) {
+  selectedPayMethod = tab;
+  document.querySelectorAll('.co-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.co-tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('co-panel-' + tab).classList.add('active');
+  const total = cart.reduce((s,c) => { const p = products.find(x => x.id === c.id); return s + (p ? p.price * c.qty : 0); }, 0);
+  const labels = { momo: 'Pay K' + total.toFixed(2), bank: 'Pay via Bank K' + total.toFixed(2), card: 'Pay with Card K' + total.toFixed(2) };
+  document.getElementById('co-pay-text').textContent = labels[tab] || 'Pay Now';
+}
+
+function selectNetwork(el, network) {
+  selectedNetwork = network;
+  document.querySelectorAll('.co-network').forEach(n => n.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function resetCheckoutForm() {
+  document.getElementById('co-name').value = '';
+  document.getElementById('co-email').value = '';
+  document.getElementById('co-phone').value = '';
+  document.getElementById('co-bank').value = '';
+  selectedNetwork = 'MTN';
+  selectedPayMethod = 'momo';
+  document.querySelectorAll('.co-network').forEach(n => n.classList.remove('selected'));
+  document.querySelector('.co-network').classList.add('selected');
+  document.querySelectorAll('.co-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+  document.querySelectorAll('.co-tab-panel').forEach((p,i) => p.classList.toggle('active', i===0));
+  const btn = document.getElementById('co-pay-btn');
+  btn.disabled = false;
+  document.getElementById('co-pay-text').textContent = 'Pay Now';
+  document.getElementById('co-spinner').style.display = 'none';
+}
+
+async function processPayment() {
+  const name = document.getElementById('co-name').value.trim();
+  const email = document.getElementById('co-email').value.trim();
+  if(!name) { showToast('Please enter your name','err'); return; }
+  if(!email || !email.includes('@')) { showToast('Please enter a valid email','err'); return; }
+
+  const total = cart.reduce((s,c) => { const p = products.find(x => x.id === c.id); return s + (p ? p.price * c.qty : 0); }, 0);
+  const items = cart.map(c => { const p = products.find(x => x.id === c.id); return p ? { name: p.name, qty: c.qty, price: p.price } : null; }).filter(Boolean);
+
+  const btn = document.getElementById('co-pay-btn');
+  const spinner = document.getElementById('co-spinner');
+  const payText = document.getElementById('co-pay-text');
+  btn.disabled = true;
+  spinner.style.display = 'inline-block';
+  payText.textContent = 'Processing...';
+
+  try {
+    let endpoint, body;
+
+    if(selectedPayMethod === 'momo') {
+      const phone = document.getElementById('co-phone').value.trim();
+      if(!phone || phone.length < 10) { showToast('Please enter a valid phone number','err'); btn.disabled = false; spinner.style.display = 'none'; payText.textContent = 'Pay Now'; return; }
+      endpoint = '/api/pay/mobile-money';
+      body = { phone_number: phone, network: selectedNetwork, amount: total, email, fullname: name, items };
+    } else if(selectedPayMethod === 'bank') {
+      const bankCode = document.getElementById('co-bank').value;
+      if(!bankCode) { showToast('Please select a bank','err'); btn.disabled = false; spinner.style.display = 'none'; payText.textContent = 'Pay Now'; return; }
+      endpoint = '/api/pay/bank-transfer';
+      body = { amount: total, email, fullname: name, bank_code: bankCode, items };
+    } else {
+      endpoint = '/api/pay/card';
+      body = { amount: total, email, fullname: name, phone_number: document.getElementById('co-phone').value.trim() || null, items };
+    }
+
+    if(!API_BASE) {
+      showCheckoutSuccess('KC-DEMO-' + Date.now().toString(36).toUpperCase());
+      return;
+    }
+
+    const resp = await fetch(API_BASE + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    if(!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.detail || 'Payment failed. Please try again.');
+    }
+
+    const data = await resp.json();
+
+    if(data.payment_link || data.redirect_url) {
+      window.location.href = data.payment_link || data.redirect_url;
+      return;
+    }
+
+    if(data.status === 'success') {
+      showCheckoutSuccess(data.tx_ref || 'N/A');
+    } else {
+      throw new Error(data.message || 'Payment could not be processed.');
+    }
+  } catch(err) {
+    showToast(err.message || 'Payment error. Please try again.', 'err');
+    btn.disabled = false;
+    spinner.style.display = 'none';
+    payText.textContent = 'Pay Now';
+  }
+}
+
+function showCheckoutSuccess(ref) {
+  const body = document.getElementById('checkout-body');
+  body.innerHTML = `<div class="co-success">
+    <div class="co-success-icon">&#127881;</div>
+    <h4>Payment Initiated!</h4>
+    <p>${selectedPayMethod === 'momo'
+      ? 'A payment prompt has been sent to your phone. Please approve the transaction on your mobile device to complete the purchase.'
+      : selectedPayMethod === 'bank'
+      ? 'Your bank transfer has been initiated. Please complete the transfer using the details sent to your email.'
+      : 'Your card payment is being processed. You will receive a confirmation shortly.'}</p>
+    <div class="co-ref">Ref: ${ref}</div>
+  </div>
+  <button class="co-pay-btn" onclick="finishCheckout()" style="margin-top:24px">&#128722; Continue Shopping</button>`;
+  cart = [];
+  saveCart();
+}
+
+function finishCheckout() {
+  closeCheckout();
+  setTimeout(() => {
+    document.getElementById('checkout-body').innerHTML = '';
+    location.reload();
+  }, 300);
+}
+
+/* Handle payment redirect callback */
+(function checkPaymentReturn() {
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('payment') === 'success') {
+    const ref = params.get('ref') || '';
+    cart = [];
+    saveCart();
+    showToast('Payment successful! Reference: ' + ref, 'ok');
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+})();
 </script>
 </body>
 </html>
